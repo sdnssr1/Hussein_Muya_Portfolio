@@ -15,7 +15,7 @@ const ContactSection = ({
   email = "hussein.muya@example.com",
   linkedIn = "https://linkedin.com/in/hussein-muya",
   resumeUrl = "/resume.pdf",
-  headshot = "https://api.dicebear.com/7.x/avataaars/svg?seed=hussein",
+  headshot = "/images/husse.png",
 }: ContactSectionProps) => {
   return (
     <section id="contact" className="py-16 px-4 bg-background relative">
@@ -26,11 +26,16 @@ const ContactSection = ({
           {/* Left side - Headshot and brief text */}
           <div className="flex flex-col items-center md:items-start">
             <div className="relative mb-6">
-              <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary/20 bg-background">
+              <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary/20 bg-transparent">
                 <img
                   src={headshot}
                   alt="Hussein Muya"
                   className="w-full h-full object-cover"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: '35% center',
+                    transform: 'scale(1.25)'
+                  }}
                 />
               </div>
               {/* Circuit design accent */}

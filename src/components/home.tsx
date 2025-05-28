@@ -175,11 +175,16 @@ const Home = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-square rounded-full overflow-hidden border-4 border-primary/20 shadow-xl max-w-md mx-auto">
+            <div className="aspect-square rounded-full overflow-hidden border-4 border-primary/20 shadow-xl max-w-sm mx-auto mt-8">
               <img
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80"
+                src="/images/husse.png"
                 alt="Hussein Muya"
                 className="w-full h-full object-cover"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: '35% center',
+                  transform: 'scale(1.25)'
+                }}
               />
             </div>
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
