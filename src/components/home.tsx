@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import ContactSection from "./ContactSection";
 import Navbar from "./Navbar";
 import ProjectCard from "./ProjectCard";
 import SkillsGrid from "./SkillsGrid";
-import ContactSection from "./ContactSection";
 import { Separator } from "./ui/separator";
 
 const Home = () => {
@@ -39,7 +39,7 @@ const Home = () => {
         "https://images.unsplash.com/photo-1580584126903-c17d41830450?w=800&q=80",
       description:
         "Developed a wireless sensor network to detect and locate air leaks in industrial environments.",
-      technologies: ["Arduino", "RF Communication", "C++", "PCB Design"],
+      technologies: ["ESP32", "RF Communication", "C++", "PCB Design"],
       goals:
         "Create a scalable, low-power wireless sensor network capable of detecting air leaks in industrial settings.",
       challenges:

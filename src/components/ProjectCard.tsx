@@ -29,13 +29,13 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({
-  title = "Wireless Sensor System for Air Leak Detection",
-  description = "Developed a wireless sensor network to detect and locate air leaks in industrial environments",
-  image = "https://images.unsplash.com/photo-1580584126903-c17d41830450?w=800&q=80",
-  technologies = ["Arduino", "C++", "RF Communication", "Sensor Fusion"],
-  goals = "Design and implement a cost-effective wireless sensor network capable of detecting air leaks in industrial settings with high accuracy and minimal false positives.",
-  challenges = "Overcoming RF interference in industrial environments, optimizing power consumption for battery-operated sensors, and developing robust algorithms for leak detection amid background noise.",
-  outcomes = "Successfully deployed a network of 12 sensors covering 5,000 sq ft with 95% detection accuracy. Reduced leak detection time by 75% compared to manual inspections, resulting in estimated annual savings of $45,000.",
+  title = "Smart Home Automation Hub",
+  description = "Built an integrated home automation system with voice control and energy monitoring",
+  image = "https://images.unsplash.com/photo-1558002038-bb0237f4d7fc?w=800&q=80",
+  technologies = ["Raspberry Pi", "Python", "Machine Learning", "IoT"],
+  goals = "Create a centralized home automation system that integrates various smart devices while providing energy usage analytics and voice control.",
+  challenges = "Developing a robust communication protocol between different IoT devices, implementing secure authentication, and optimizing ML algorithms for resource-constrained devices.",
+  outcomes = "Created a system that integrates 15+ device types, reduces energy consumption by 20%, and responds to voice commands with 97% accuracy.",
   link = "#",
 }: ProjectCardProps) => {
   return (
