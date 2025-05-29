@@ -441,7 +441,7 @@ const Home = () => {
               className="bg-card rounded-xl border p-6 shadow-sm transition-all hover:shadow-lg experience-card"
               style={{ 
                 // @ts-ignore - Using custom CSS variables
-                '--card-rgb': '245, 242, 235' 
+                '--card-rgb': '130, 110, 165' 
               }}
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
