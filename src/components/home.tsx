@@ -14,8 +14,7 @@ const hoverStyles = `
   .experience-container:hover .experience-card:not(:hover),
   .education-container:hover .education-card:not(:hover),
   .awards-container:hover .award-card:not(:hover) {
-    filter: blur(2px);
-    opacity: 0.7;
+    opacity: 0.85;
     transform: scale(0.98);
   }
   
@@ -462,19 +461,70 @@ const Home = () => {
                 </div>
                 
                 <div className="grid grid-cols-1 gap-6 mt-4">
-                  <div className="border-l-4 pl-5" style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}>
-                    <h4 className="font-semibold text-base mb-2 text-foreground/90">Goals</h4>
-                    <p className="text-foreground/80 leading-relaxed">{project.goals}</p>
+                  {/* Goals with dropdown effect */}
+                  <div 
+                    className="border-l-4 pl-5 cursor-pointer group" 
+                    style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}
+                  >
+                    <h4 className="font-semibold text-base mb-2 text-foreground/90 flex items-center">
+                      Goals
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:rotate-180" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </h4>
+                    <div className="overflow-hidden transition-all duration-300 max-h-0 group-hover:max-h-40">
+                      <p className="text-foreground/80 leading-relaxed">{project.goals}</p>
+                    </div>
                   </div>
                   
-                  <div className="border-l-4 pl-5" style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}>
-                    <h4 className="font-semibold text-base mb-2 text-foreground/90">Challenges</h4>
-                    <p className="text-foreground/80 leading-relaxed">{project.challenges}</p>
+                  {/* Challenges with dropdown effect */}
+                  <div 
+                    className="border-l-4 pl-5 cursor-pointer group" 
+                    style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}
+                  >
+                    <h4 className="font-semibold text-base mb-2 text-foreground/90 flex items-center">
+                      Challenges
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:rotate-180" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </h4>
+                    <div className="overflow-hidden transition-all duration-300 max-h-0 group-hover:max-h-40">
+                      <p className="text-foreground/80 leading-relaxed">{project.challenges}</p>
+                    </div>
                   </div>
                   
-                  <div className="border-l-4 pl-5" style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}>
-                    <h4 className="font-semibold text-base mb-2 text-foreground/90">Outcomes</h4>
-                    <p className="text-foreground/80 leading-relaxed">{project.outcomes}</p>
+                  {/* Outcomes with dropdown effect */}
+                  <div 
+                    className="border-l-4 pl-5 cursor-pointer group" 
+                    style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}
+                  >
+                    <h4 className="font-semibold text-base mb-2 text-foreground/90 flex items-center">
+                      Outcomes
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:rotate-180" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </h4>
+                    <div className="overflow-hidden transition-all duration-300 max-h-0 group-hover:max-h-40">
+                      <p className="text-foreground/80 leading-relaxed">{project.outcomes}</p>
+                    </div>
                   </div>
                 </div>
               </div>
