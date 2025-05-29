@@ -24,7 +24,7 @@ const projectHoverStyles = `
     position: absolute;
     inset: -5px;
     z-index: -1;
-    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(var(--primary-rgb), 0.3) 0%, transparent 60%);
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(var(--card-rgb, 29, 78, 216), 0.3) 0%, transparent 60%);
     border-radius: 16px;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -176,9 +176,26 @@ const Home = () => {
 
     document.addEventListener('mousemove', handleMouseMove);
     
-    // Set the CSS variable for primary color in RGB format
-    const root = document.documentElement;
-    root.style.setProperty('--primary-rgb', '29, 78, 216'); // Default blue RGB
+    // Set different color themes for each project card
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach((card, index) => {
+      const htmlCard = card as HTMLElement;
+      
+      // Assign different colors based on index
+      if (index === 0) {
+        // First project - reddish
+        htmlCard.style.setProperty('--card-rgb', '220, 38, 38'); // Red
+        htmlCard.style.setProperty('--card-border', 'rgba(220, 38, 38, 0.3)');
+      } else if (index === 1) {
+        // Second project - greenish
+        htmlCard.style.setProperty('--card-rgb', '22, 163, 74'); // Green
+        htmlCard.style.setProperty('--card-border', 'rgba(22, 163, 74, 0.3)');
+      } else {
+        // Third project - blue (default)
+        htmlCard.style.setProperty('--card-rgb', '29, 78, 216'); // Blue
+        htmlCard.style.setProperty('--card-border', 'rgba(29, 78, 216, 0.3)');
+      }
+    });
     
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
@@ -281,7 +298,12 @@ const Home = () => {
           {projects.map((project, index) => (
             <div 
               key={project.id} 
-              className={`flex flex-col ${index % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center bg-card/50 rounded-xl p-6 border-2 border-primary/10 shadow-sm project-card transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:border-primary/30 hover:z-10 hover:relative hover:shadow-primary/20`}
+              className={`flex flex-col ${index % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center bg-card/50 rounded-xl p-6 border-2 shadow-sm project-card transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:z-10 hover:relative`}
+              style={{ 
+                borderColor: 'var(--card-border, rgba(29, 78, 216, 0.1))', 
+                // @ts-ignore - Using custom CSS variables
+                '--card-rgb': index === 0 ? '220, 38, 38' : index === 1 ? '22, 163, 74' : '29, 78, 216' 
+              }}
             >
               <div className="w-full md:w-2/5 rounded-xl overflow-hidden">
                 <img
