@@ -1,2 +1,1 @@
-update coming soon...
-https://husseinmuya.com
+page comming soon..
