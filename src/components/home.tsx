@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import ProjectCard from "./ProjectCard";
 import SkillsGrid from "./SkillsGrid";
 import { Separator } from "./ui/separator";
+import { Badge } from "./ui/badge";
 
 const Home = () => {
   // Dark mode state
@@ -39,7 +40,7 @@ const Home = () => {
         "https://images.unsplash.com/photo-1580584126903-c17d41830450?w=800&q=80",
       description:
         "Developed a wireless sensor network to detect and locate air leaks in industrial environments.",
-      technologies: ["ESP32", "RF Communication", "C++", "PCB Design"],
+      technologies: ["ESP32", "CTP IP", "C++", "PCB Design"],
       goals:
         "Create a scalable, low-power wireless sensor network capable of detecting air leaks in industrial settings.",
       challenges:
@@ -221,9 +222,52 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+        <div className="flex flex-col space-y-16">
+          {projects.map((project, index) => (
+            <div 
+              key={project.id} 
+              className={`flex flex-col ${index % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center bg-card/50 rounded-xl p-6 border shadow-sm hover:shadow-md transition-all`}
+            >
+              <div className="w-full md:w-2/5 rounded-xl overflow-hidden">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+              
+              <div className="w-full md:w-3/5 space-y-6">
+                <div>
+                  <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+                  <p className="text-muted-foreground">{project.description}</p>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 my-4">
+                  {project.technologies.map((tech, idx) => (
+                    <Badge key={idx} variant="secondary" className="bg-primary/10">
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+                
+                <div className="grid grid-cols-1 gap-4 mt-4">
+                  <div className="border-l-4 border-primary/50 pl-4">
+                    <h4 className="font-semibold text-sm mb-1">Goals</h4>
+                    <p className="text-sm text-muted-foreground">{project.goals}</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-primary/50 pl-4">
+                    <h4 className="font-semibold text-sm mb-1">Challenges</h4>
+                    <p className="text-sm text-muted-foreground">{project.challenges}</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-primary/50 pl-4">
+                    <h4 className="font-semibold text-sm mb-1">Outcomes</h4>
+                    <p className="text-sm text-muted-foreground">{project.outcomes}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </section>
