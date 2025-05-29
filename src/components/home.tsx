@@ -2,14 +2,16 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import ContactSection from "./ContactSection";
 import Navbar from "./Navbar";
-import ProjectCard from "./ProjectCard";
 import SkillsGrid from "./SkillsGrid";
-import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
 
-// Custom CSS for project hover effects
-const projectHoverStyles = `
-  .project-container:hover .project-card:not(:hover) {
+// Custom CSS for project hover effects including IBM Plex Sans font
+const hoverStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  .project-container:hover .project-card:not(:hover),
+  .experience-container:hover .experience-card:not(:hover) {
     filter: blur(2px);
     opacity: 0.7;
     transform: scale(0.98);
@@ -17,9 +19,31 @@ const projectHoverStyles = `
   
   .project-card {
     position: relative;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
   }
   
-  .project-card::before {
+  .project-card h3 {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  
+  .project-card p {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  
+  .project-card h4 {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  
+  .project-card::before,
+  .experience-card::before {
     content: "";
     position: absolute;
     inset: -5px;
@@ -30,8 +54,22 @@ const projectHoverStyles = `
     transition: opacity 0.3s ease;
   }
   
-  .project-card:hover::before {
+  .project-card:hover::before,
+  .experience-card:hover::before {
     opacity: 1;
+  }
+  
+  .experience-card {
+    position: relative;
+    transition: all 0.3s ease;
+    border-color: rgba(var(--card-rgb, 245, 242, 235), 0.4);
+  }
+  
+  .experience-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(var(--card-rgb, 245, 242, 235), 0.9);
+    box-shadow: 0 10px 25px -5px rgba(var(--card-rgb, 245, 242, 235), 0.4), 0 0 5px 2px rgba(var(--card-rgb, 245, 242, 235), 0.3);
+    z-index: 10;
   }
 `;
 
@@ -160,52 +198,82 @@ const Home = () => {
     },
   ];
 
-  // Add CSS variable for primary color in RGB format
+  // Handle mouse tracking and card effects safely after render
   useEffect(() => {
+    // Safety check to ensure we're in the browser environment
+    if (typeof window === 'undefined') return;
+    
+    // Create a safe handler for mouse movement
     const handleMouseMove = (e: MouseEvent) => {
-      const cards = document.querySelectorAll('.project-card');
-      cards.forEach(card => {
-        const htmlCard = card as HTMLElement;
-        const rect = htmlCard.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        htmlCard.style.setProperty('--x', `${x}%`);
-        htmlCard.style.setProperty('--y', `${y}%`);
+      // Handle both project and experience cards
+      const allCards = document.querySelectorAll('.project-card, .experience-card');
+      if (!allCards || allCards.length === 0) return;
+      
+      allCards.forEach(card => {
+        try {
+          const htmlCard = card as HTMLElement;
+          const rect = htmlCard.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          htmlCard.style.setProperty('--x', `${x}%`);
+          htmlCard.style.setProperty('--y', `${y}%`);
+        } catch (err) {
+          // Silently handle any errors with individual cards
+          console.debug('Error updating card:', err);
+        }
       });
     };
 
+    // Apply colors after a short delay to ensure DOM is ready
+    const applyCardColors = () => {
+      try {
+        // Set different color themes for each project card
+        const projectCards = document.querySelectorAll('.project-card');
+        if (projectCards && projectCards.length > 0) {
+          projectCards.forEach((card, index) => {
+            try {
+              const htmlCard = card as HTMLElement;
+              
+              // Assign different colors based on index
+              if (index === 0) {
+                // First project - reddish
+                htmlCard.style.setProperty('--card-rgb', '220, 38, 38');
+                htmlCard.style.setProperty('--card-border', 'rgba(220, 38, 38, 0.3)');
+              } else if (index === 1) {
+                // Second project - greenish
+                htmlCard.style.setProperty('--card-rgb', '22, 163, 74');
+                htmlCard.style.setProperty('--card-border', 'rgba(22, 163, 74, 0.3)');
+              } else {
+                // Third project - blue (default)
+                htmlCard.style.setProperty('--card-rgb', '29, 78, 216');
+                htmlCard.style.setProperty('--card-border', 'rgba(29, 78, 216, 0.3)');
+              }
+            } catch (err) {
+              console.debug('Error setting card color:', err);
+            }
+          });
+        }
+      } catch (err) {
+        console.debug('Error applying card colors:', err);
+      }
+    };
+    
+    // Add event listener with proper error handling
     document.addEventListener('mousemove', handleMouseMove);
     
-    // Set different color themes for each project card
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach((card, index) => {
-      const htmlCard = card as HTMLElement;
-      
-      // Assign different colors based on index
-      if (index === 0) {
-        // First project - reddish
-        htmlCard.style.setProperty('--card-rgb', '220, 38, 38'); // Red
-        htmlCard.style.setProperty('--card-border', 'rgba(220, 38, 38, 0.3)');
-      } else if (index === 1) {
-        // Second project - greenish
-        htmlCard.style.setProperty('--card-rgb', '22, 163, 74'); // Green
-        htmlCard.style.setProperty('--card-border', 'rgba(22, 163, 74, 0.3)');
-      } else {
-        // Third project - blue (default)
-        htmlCard.style.setProperty('--card-rgb', '29, 78, 216'); // Blue
-        htmlCard.style.setProperty('--card-border', 'rgba(29, 78, 216, 0.3)');
-      }
-    });
+    // Apply colors after a short delay to ensure DOM is fully rendered
+    const colorTimer = setTimeout(applyCardColors, 100);
     
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(colorTimer);
     };
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
       {/* Inject custom CSS */}
-      <style dangerouslySetInnerHTML={{ __html: projectHoverStyles }} />
+      <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <Navbar darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />
 
       {/* Hero Section */}
@@ -313,34 +381,34 @@ const Home = () => {
                 />
               </div>
               
-              <div className="w-full md:w-3/5 space-y-6">
+              <div className="w-full md:w-3/5 space-y-7">
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
-                  <p className="text-muted-foreground">{project.description}</p>
+                  <h3 className="text-2xl font-bold mb-3 text-foreground/90">{project.title}</h3>
+                  <p className="text-foreground/80 text-base">{project.description}</p>
                 </div>
                 
                 <div className="flex flex-wrap gap-2 my-4">
                   {project.technologies.map((tech, idx) => (
-                    <Badge key={idx} variant="secondary" className="bg-primary/10">
+                    <Badge key={idx} variant="secondary" className="bg-primary/10 text-sm py-1 px-3">
                       {tech}
                     </Badge>
                   ))}
                 </div>
                 
-                <div className="grid grid-cols-1 gap-4 mt-4">
-                  <div className="border-l-4 border-primary/50 pl-4">
-                    <h4 className="font-semibold text-sm mb-1">Goals</h4>
-                    <p className="text-sm text-muted-foreground">{project.goals}</p>
+                <div className="grid grid-cols-1 gap-6 mt-4">
+                  <div className="border-l-4 pl-5" style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}>
+                    <h4 className="font-semibold text-base mb-2 text-foreground/90">Goals</h4>
+                    <p className="text-foreground/80 leading-relaxed">{project.goals}</p>
                   </div>
                   
-                  <div className="border-l-4 border-primary/50 pl-4">
-                    <h4 className="font-semibold text-sm mb-1">Challenges</h4>
-                    <p className="text-sm text-muted-foreground">{project.challenges}</p>
+                  <div className="border-l-4 pl-5" style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}>
+                    <h4 className="font-semibold text-base mb-2 text-foreground/90">Challenges</h4>
+                    <p className="text-foreground/80 leading-relaxed">{project.challenges}</p>
                   </div>
                   
-                  <div className="border-l-4 border-primary/50 pl-4">
-                    <h4 className="font-semibold text-sm mb-1">Outcomes</h4>
-                    <p className="text-sm text-muted-foreground">{project.outcomes}</p>
+                  <div className="border-l-4 pl-5" style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}>
+                    <h4 className="font-semibold text-base mb-2 text-foreground/90">Outcomes</h4>
+                    <p className="text-foreground/80 leading-relaxed">{project.outcomes}</p>
                   </div>
                 </div>
               </div>
@@ -366,11 +434,15 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-8 experience-container">
           {experience.map((job, index) => (
             <div
               key={index}
-              className="bg-card rounded-xl border p-6 shadow-sm transition-all hover:shadow-md"
+              className="bg-card rounded-xl border p-6 shadow-sm transition-all hover:shadow-lg experience-card"
+              style={{ 
+                // @ts-ignore - Using custom CSS variables
+                '--card-rgb': '245, 242, 235' 
+              }}
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
                 <div>
