@@ -77,15 +77,22 @@ const hoverStyles = `
 
 const Home = () => {
   // Dark mode state - default to true for dark mode
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("darkMode");
-      return saved ? JSON.parse(saved) : true;
-    }
-    return true;
-  });
+  const [darkMode, setDarkMode] = useState(true);
 
   // Apply dark mode to document
+  useEffect(() => {
+    // Check localStorage only after initial render to avoid overriding the default dark mode
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode !== null) {
+      setDarkMode(JSON.parse(savedMode));
+    } else {
+      // If no saved preference, enforce dark mode
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("darkMode", JSON.stringify(true));
+    }
+  }, []);
+
+  // Update document class whenever dark mode changes
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -300,13 +307,32 @@ const Home = () => {
             <div className="flex gap-4">
               <a
                 href="#projects"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-4 py-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const projectsSection = document.getElementById('projects');
+                  if (projectsSection) {
+                    // Get the height of the navbar to offset the scrolling
+                    const navbarHeight = document.querySelector('nav')?.clientHeight || 0;
+                    const elementPosition = projectsSection.getBoundingClientRect().top + window.scrollY;
+                    
+                    // Scroll to the projects section with offset for the navbar
+                    window.scrollTo({
+                      top: elementPosition - navbarHeight,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-4 py-2 cursor-pointer"
               >
                 View Projects
               </a>
               <a
                 href="#contact"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
               >
                 Contact Me
               </a>
