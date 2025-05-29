@@ -305,34 +305,83 @@ const SkillsGrid = ({
     },
   ],
 }: SkillsGridProps) => {
+  const [theme, setTheme] = useState('dark');
+  
+  useEffect(() => {
+    // Check for theme attribute on document or body element
+    const checkTheme = () => {
+      const dataTheme = document.documentElement.getAttribute('data-theme');
+      setTheme(dataTheme || 'dark');
+    };
+    
+    // Check theme initially
+    checkTheme();
+    
+    // Set up mutation observer to detect theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-theme') {
+          checkTheme();
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, { attributes: true });
+    
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="w-full bg-background py-8">
+    <div className="w-full py-8 border-2 border-gradient-to-r from-blue-500/40 via-purple-500/40 to-pink-500/40 rounded-lg my-4"
+         style={{
+           borderImage: 'linear-gradient(to right, rgba(59, 130, 246, 0.4), rgba(168, 85, 247, 0.4), rgba(236, 72, 153, 0.4)) 1',
+           background: 'rgba(255, 255, 255, 0.05)',
+           backdropFilter: 'blur(8px)',
+           boxShadow: '0 0 20px rgba(168, 85, 247, 0.25)',
+           WebkitBackdropFilter: 'blur(8px)',
+           border: '1px solid rgba(255, 255, 255, 0.1)'
+         } as React.CSSProperties}>
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-8 text-center">Skills</h2>
 
         <Tabs defaultValue="programming" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8" style={{ background: 'transparent', boxShadow: 'none', border: 'none' } as React.CSSProperties}>
             <TabsTrigger
               value="programming"
               className="flex items-center gap-2"
+              style={{
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                color: 'rgb(37, 99, 235)'
+              } as React.CSSProperties}
             >
               <Code size={16} />
               <span className="hidden sm:inline">Programming</span>
             </TabsTrigger>
-            <TabsTrigger value="hardware" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="hardware" 
+              className="flex items-center gap-2"
+              style={{
+                backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                color: 'rgb(34, 139, 34)'
+              } as React.CSSProperties}
+            >
               <CircuitBoard size={16} />
               <span className="hidden sm:inline">Hardware</span>
             </TabsTrigger>
             <TabsTrigger
               value="methodologies"
               className="flex items-center gap-2"
+              style={{
+                backgroundColor: 'rgba(156, 39, 176, 0.2)',
+                color: 'rgb(142, 36, 170)'
+              } as React.CSSProperties}
             >
               <Layers size={16} />
               <span className="hidden sm:inline">Methodologies</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="programming" className="space-y-4">
+          <TabsContent value="programming" className="space-y-4" style={{ background: 'transparent', padding: '1rem', borderRadius: '0.5rem' } as React.CSSProperties}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {programmingLanguages.map((skill, index) => (
                 <SkillCard key={index} skill={skill} categoryType="programming" />
@@ -340,7 +389,7 @@ const SkillsGrid = ({
             </div>
           </TabsContent>
 
-          <TabsContent value="hardware" className="space-y-4">
+          <TabsContent value="hardware" className="space-y-4" style={{ background: 'transparent', padding: '1rem', borderRadius: '0.5rem' } as React.CSSProperties}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {hardwareTools.map((skill, index) => (
                 <SkillCard key={index} skill={skill} categoryType="hardware" />
@@ -348,7 +397,7 @@ const SkillsGrid = ({
             </div>
           </TabsContent>
 
-          <TabsContent value="methodologies" className="space-y-4">
+          <TabsContent value="methodologies" className="space-y-4" style={{ background: 'transparent', padding: '1rem', borderRadius: '0.5rem' } as React.CSSProperties}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {designMethodologies.map((skill, index) => (
                 <SkillCard key={index} skill={skill} categoryType="methodologies" />
@@ -403,7 +452,7 @@ const SkillCard = ({ skill, categoryType }: SkillCardProps) => {
           borderStyle: 'solid',
           borderColor: `${theme.primary}20`,
           transition: 'border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease'
-        }}
+        } as React.CSSProperties}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.borderColor = `${theme.primary}80`;
           (e.currentTarget as HTMLElement).style.boxShadow = `0 0 20px 2px ${theme.glow}`;
@@ -417,12 +466,12 @@ const SkillCard = ({ skill, categoryType }: SkillCardProps) => {
              style={{
                background: `radial-gradient(circle 8rem at var(--x) var(--y), var(--glow-color), transparent)`,
                zIndex: 0
-             }}>
+             } as React.CSSProperties}>
         </div>
-        <CardContent className="p-4 relative z-10" style={{ background: `var(--bg-color)` }}>
+        <CardContent className="p-4 relative z-10" style={{ background: `var(--bg-color)` } as React.CSSProperties}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-md" style={{ background: `${theme.primary}20` }}>
+              <div className="p-2 rounded-md" style={{ background: `${theme.primary}20` } as React.CSSProperties}>
                 {skill.icon}
               </div>
               <h3 className="font-medium">{skill.name}</h3>
@@ -431,13 +480,13 @@ const SkillCard = ({ skill, categoryType }: SkillCardProps) => {
               variant="outline" 
               className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setIsExpanded(!isExpanded)}
-              style={{ borderColor: theme.primary, color: theme.primary }}
+              style={{ borderColor: theme.primary, color: theme.primary } as React.CSSProperties}
             >
               {Array.from({ length: 5 }).map((_, i) => (
                 <div
                   key={i}
                   className={`w-1.5 h-1.5 rounded-full`}
-                  style={{ background: i < skill.proficiency ? theme.primary : '#e2e8f0' }}
+                  style={{ background: i < skill.proficiency ? theme.primary : '#e2e8f0' } as React.CSSProperties}
                 />
               ))}
               {isExpanded ? (
@@ -449,12 +498,12 @@ const SkillCard = ({ skill, categoryType }: SkillCardProps) => {
           </div>
 
           {isExpanded && skill.usageDetails && (
-            <div className="mt-3 pt-3 border-t" style={{ borderColor: `${theme.primary}30` }}>
+            <div className="mt-3 pt-3 border-t" style={{ borderColor: `${theme.primary}30` } as React.CSSProperties}>
               <h4 className="text-sm font-medium mb-2">Usage & Applications</h4>
               <ul className="text-sm space-y-1.5">
                 {skill.usageDetails.map((detail, index) => (
                   <li key={index} className="flex items-start">
-                    <CheckCircle2 size={14} style={{ color: theme.primary }} className="mt-1 mr-2 flex-shrink-0" />
+                    <CheckCircle2 size={14} style={{ color: theme.primary } as React.CSSProperties} className="mt-1 mr-2 flex-shrink-0" />
                     <span>{detail}</span>
                   </li>
                 ))}

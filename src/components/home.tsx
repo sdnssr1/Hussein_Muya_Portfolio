@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ContactSection from "./ContactSection";
 import Navbar from "./Navbar";
 import SkillsGrid from "./SkillsGrid";
@@ -104,6 +104,39 @@ const Home = () => {
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
+
+  // Add custom CSS for dropdown animations without delay
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      /* Base styles for dropdowns */
+      .delayed-dropdown-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      
+      /* Immediate opening */
+      .delayed-dropdown:hover .delayed-dropdown-content {
+        max-height: 200px;
+      }
+      
+      /* Arrow rotation */
+      .delayed-dropdown-arrow {
+        transform: rotate(0deg);
+        transition: transform 0.3s ease-in-out;
+      }
+      
+      .delayed-dropdown:hover .delayed-dropdown-arrow {
+        transform: rotate(180deg);
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   // Sample project data
   const projects = [
@@ -279,7 +312,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen ${darkMode ? 'bg-black' : 'bg-zinc-50/90'}`} data-theme={darkMode ? 'dark' : 'light'}>
       {/* Inject custom CSS */}
       <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <Navbar darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />
@@ -431,11 +464,15 @@ const Home = () => {
           {projects.map((project, index) => (
             <div 
               key={project.id} 
-              className={`flex flex-col ${index % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center bg-card/50 rounded-xl p-6 border-2 shadow-sm project-card transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:z-10 hover:relative`}
+              className={`flex flex-col ${index % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center rounded-xl p-6 border-2 shadow-sm project-card transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:z-10 hover:relative`}
               style={{ 
                 borderColor: 'var(--card-border, rgba(29, 78, 216, 0.1))', 
                 // @ts-ignore - Using custom CSS variables
-                '--card-rgb': index === 0 ? '220, 38, 38' : index === 1 ? '22, 163, 74' : '29, 78, 216' 
+                '--card-rgb': index === 0 ? '220, 38, 38' : index === 1 ? '22, 163, 74' : '29, 78, 216',
+                background: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                boxShadow: '0 0 15px rgba(var(--card-rgb), 0.15)'
               }}
             >
               <div className="w-full md:w-2/5 rounded-xl overflow-hidden">
@@ -463,14 +500,14 @@ const Home = () => {
                 <div className="grid grid-cols-1 gap-6 mt-4">
                   {/* Goals with dropdown effect */}
                   <div 
-                    className="border-l-4 pl-5 cursor-pointer group" 
+                    className="border-l-4 pl-5 cursor-pointer delayed-dropdown" 
                     style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}
                   >
                     <h4 className="font-semibold text-base mb-2 text-foreground/90 flex items-center">
                       Goals
                       <svg 
                         xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:rotate-180" 
+                        className="h-4 w-4 ml-2 delayed-dropdown-arrow" 
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
@@ -478,21 +515,21 @@ const Home = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </h4>
-                    <div className="overflow-hidden transition-all duration-300 max-h-0 group-hover:max-h-40">
-                      <p className="text-foreground/80 leading-relaxed">{project.goals}</p>
+                    <div className="delayed-dropdown-content">
+                      <p className="text-foreground/80 leading-relaxed p-1">{project.goals}</p>
                     </div>
                   </div>
                   
                   {/* Challenges with dropdown effect */}
                   <div 
-                    className="border-l-4 pl-5 cursor-pointer group" 
+                    className="border-l-4 pl-5 cursor-pointer delayed-dropdown" 
                     style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}
                   >
                     <h4 className="font-semibold text-base mb-2 text-foreground/90 flex items-center">
                       Challenges
                       <svg 
                         xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:rotate-180" 
+                        className="h-4 w-4 ml-2 delayed-dropdown-arrow" 
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
@@ -500,21 +537,21 @@ const Home = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </h4>
-                    <div className="overflow-hidden transition-all duration-300 max-h-0 group-hover:max-h-40">
-                      <p className="text-foreground/80 leading-relaxed">{project.challenges}</p>
+                    <div className="delayed-dropdown-content">
+                      <p className="text-foreground/80 leading-relaxed p-1">{project.challenges}</p>
                     </div>
                   </div>
                   
                   {/* Outcomes with dropdown effect */}
                   <div 
-                    className="border-l-4 pl-5 cursor-pointer group" 
+                    className="border-l-4 pl-5 cursor-pointer delayed-dropdown" 
                     style={{ borderColor: `rgba(var(--card-rgb), 0.5)` }}
                   >
                     <h4 className="font-semibold text-base mb-2 text-foreground/90 flex items-center">
                       Outcomes
                       <svg 
                         xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:rotate-180" 
+                        className="h-4 w-4 ml-2 delayed-dropdown-arrow" 
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
@@ -522,8 +559,8 @@ const Home = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </h4>
-                    <div className="overflow-hidden transition-all duration-300 max-h-0 group-hover:max-h-40">
-                      <p className="text-foreground/80 leading-relaxed">{project.outcomes}</p>
+                    <div className="delayed-dropdown-content">
+                      <p className="text-foreground/80 leading-relaxed p-1">{project.outcomes}</p>
                     </div>
                   </div>
                 </div>
@@ -554,10 +591,16 @@ const Home = () => {
           {experience.map((job, index) => (
             <div
               key={index}
-              className="bg-card rounded-xl border p-6 shadow-sm transition-all hover:shadow-lg experience-card"
+              className="rounded-xl border p-6 shadow-sm transition-all hover:shadow-lg experience-card hover:scale-[1.02]"
               style={{ 
                 // @ts-ignore - Using custom CSS variables
-                '--card-rgb': '130, 110, 165' 
+                '--card-rgb': '130, 110, 165',
+                background: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                boxShadow: '0 0 15px rgba(130, 110, 165, 0.15)',
+                borderColor: 'rgba(130, 110, 165, 0.3)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
               }}
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
@@ -628,7 +671,7 @@ const Home = () => {
                 '--gold-bg': 'rgba(212, 175, 55, 0.02)',
                 borderWidth: '1px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(212, 175, 55, 0.1)',
+                borderColor: 'rgba(212, 175, 55, 0.5)',
                 transition: 'border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease'
               } as React.CSSProperties}
               onMouseMove={(e) => {
@@ -643,7 +686,7 @@ const Home = () => {
                 e.currentTarget.style.boxShadow = '0 0 20px 2px rgba(212, 175, 55, 0.15)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
                 e.currentTarget.style.boxShadow = '';
               }}
             >
@@ -654,7 +697,12 @@ const Home = () => {
                   zIndex: 0
                 }}
               ></div>
-              <div className="bg-card p-6 relative z-10" style={{ background: 'var(--gold-bg)' }}>
+              <div className="bg-card p-6 relative z-10" style={{ 
+                background: 'rgba(255, 255, 255, 0.05)', 
+                backdropFilter: 'blur(8px)', 
+                WebkitBackdropFilter: 'blur(8px)',
+                boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
+              }}>
                 <h3 className="text-xl font-semibold">{edu.degree}</h3>
                 <div className="flex items-center justify-between mt-2">
                   <p className="text-muted-foreground">{edu.institution}</p>
@@ -699,7 +747,7 @@ const Home = () => {
                 '--teal-bg': 'rgba(0, 128, 128, 0.02)',
                 borderWidth: '1px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(0, 128, 128, 0.1)',
+                borderColor: 'rgba(0, 128, 128, 0.5)',
                 transition: 'border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease'
               } as React.CSSProperties}
               onMouseMove={(e) => {
@@ -714,7 +762,7 @@ const Home = () => {
                 e.currentTarget.style.boxShadow = '0 0 20px 2px rgba(0, 128, 128, 0.15)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0, 128, 128, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(0, 128, 128, 0.5)';
                 e.currentTarget.style.boxShadow = '';
               }}
             >
@@ -725,7 +773,12 @@ const Home = () => {
                   zIndex: 0
                 }}
               ></div>
-              <div className="bg-card p-6 relative z-10" style={{ background: 'var(--teal-bg)' }}>
+              <div className="bg-card p-6 relative z-10" style={{ 
+                background: 'rgba(255, 255, 255, 0.05)', 
+                backdropFilter: 'blur(8px)', 
+                WebkitBackdropFilter: 'blur(8px)',
+                boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
+              }}>
                 <h3 className="text-xl font-semibold">{award.title}</h3>
                 <div className="flex items-center justify-between mt-2">
                   <p className="text-muted-foreground">{award.organization}</p>
@@ -745,17 +798,29 @@ const Home = () => {
       {/* Contact Section */}
       <section
         id="contact"
-        className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto"
+        className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto text-center"
       >
-        <div className="space-y-4 mb-12">
-          <h2 className="text-3xl font-bold tracking-tight">Get In Touch</h2>
-          <p className="text-muted-foreground max-w-3xl">
+        <div className="space-y-3 mb-6 flex flex-col items-center">
+          <h2 className="text-3xl font-bold tracking-tight text-center">Get In Touch</h2>
+          <p className="text-muted-foreground max-w-3xl text-center">
             Interested in working together? Feel free to reach out through any
             of the channels below.
           </p>
         </div>
 
-        <ContactSection />
+        <div className="flex justify-center">
+          <div className="w-full">
+            <ContactSection />
+          </div>
+        </div>
+        
+        {/* Additional contact info text after the contact card */}
+        <div className="mt-4 text-center max-w-3xl mx-auto">
+          <p className="text-muted-foreground">
+            I'm always open to discussing new projects, opportunities, or
+            collaborations. Looking forward to hearing from you!
+          </p>
+        </div>
       </section>
 
       {/* Footer */}
