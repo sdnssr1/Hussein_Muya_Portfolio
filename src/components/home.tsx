@@ -7,6 +7,34 @@ import SkillsGrid from "./SkillsGrid";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
 
+// Custom CSS for project hover effects
+const projectHoverStyles = `
+  .project-container:hover .project-card:not(:hover) {
+    filter: blur(2px);
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  
+  .project-card {
+    position: relative;
+  }
+  
+  .project-card::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    z-index: -1;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(var(--primary-rgb), 0.3) 0%, transparent 60%);
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .project-card:hover::before {
+    opacity: 1;
+  }
+`;
+
 const Home = () => {
   // Dark mode state
   const [darkMode, setDarkMode] = useState(() => {
@@ -132,8 +160,35 @@ const Home = () => {
     },
   ];
 
+  // Add CSS variable for primary color in RGB format
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const cards = document.querySelectorAll('.project-card');
+      cards.forEach(card => {
+        const htmlCard = card as HTMLElement;
+        const rect = htmlCard.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        htmlCard.style.setProperty('--x', `${x}%`);
+        htmlCard.style.setProperty('--y', `${y}%`);
+      });
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    
+    // Set the CSS variable for primary color in RGB format
+    const root = document.documentElement;
+    root.style.setProperty('--primary-rgb', '29, 78, 216'); // Default blue RGB
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Inject custom CSS */}
+      <style dangerouslySetInnerHTML={{ __html: projectHoverStyles }} />
       <Navbar darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />
 
       {/* Hero Section */}
@@ -222,11 +277,11 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="flex flex-col space-y-16">
+        <div className="flex flex-col space-y-16 project-container">
           {projects.map((project, index) => (
             <div 
               key={project.id} 
-              className={`flex flex-col ${index % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center bg-card/50 rounded-xl p-6 border shadow-sm hover:shadow-md transition-all`}
+              className={`flex flex-col ${index % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center bg-card/50 rounded-xl p-6 border-2 border-primary/10 shadow-sm project-card transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:border-primary/30 hover:z-10 hover:relative hover:shadow-primary/20`}
             >
               <div className="w-full md:w-2/5 rounded-xl overflow-hidden">
                 <img
