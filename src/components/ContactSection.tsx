@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Separator } from "./ui/separator";
@@ -12,7 +12,7 @@ interface ContactSectionProps {
 }
 
 const ContactSection = ({
-  email = "hussein.muya@example.com",
+  email = "Hussemuya.hm.hm@gmail.com",
   linkedIn = "https://linkedin.com/in/hussein-muya",
   resumeUrl = "/resume.pdf",
   headshot = "/images/husse.png",
@@ -25,8 +25,22 @@ const ContactSection = ({
         <div className="grid md:grid-cols-2 gap-8 items-center">
           {/* Left side - Headshot and brief text */}
           <div className="flex flex-col items-center md:items-start">
-            <div className="relative mb-6">
-              <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary/20 bg-transparent">
+            <div className="relative mb-6 group">
+              {/* Subtle glow effects for the headshot */}
+              <div 
+                className="absolute inset-0 rounded-full z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{ 
+                  background: 'radial-gradient(circle, rgba(123, 104, 238, 0.3) 0%, rgba(123, 104, 238, 0.1) 50%, rgba(123, 104, 238, 0) 70%)',
+                  transform: 'scale(1.15)',
+                  filter: 'blur(15px)',
+                  width: '14rem',  // Properly sized for the 12rem headshot (w-48)  
+                  height: '14rem',
+                  left: '-1rem',
+                  top: '-1rem'
+                }}
+              ></div>
+              
+              <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary/20 bg-transparent transition-transform duration-300 group-hover:scale-[1.03] relative z-10">
                 <img
                   src={headshot}
                   alt="Hussein Muya"
@@ -51,7 +65,7 @@ const ContactSection = ({
           </div>
 
           {/* Right side - Contact card */}
-          <Card className="overflow-hidden border border-primary/20 bg-card/50">
+          <ContactCard>
             <CardContent className="p-6">
               <div className="space-y-6">
                 {/* Email */}
@@ -116,7 +130,7 @@ const ContactSection = ({
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </ContactCard>
         </div>
       </div>
 
@@ -125,6 +139,69 @@ const ContactSection = ({
       <div className="absolute top-12 right-12 w-24 h-24 border border-primary/10 rounded-full opacity-30"></div>
       <div className="absolute bottom-12 left-12 w-16 h-16 border border-primary/10 rounded-full opacity-30"></div>
     </section>
+  );
+};
+
+// Contact Card with lavender/indigo glow effect
+const ContactCard = ({ children }: { children: React.ReactNode }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const cardRef = useRef<HTMLDivElement>(null);
+  
+  // Lavender/indigo theme
+  const theme = {
+    primary: '#7b68ee',     // Medium slate blue/lavender
+    secondary: '#9370db',   // Medium purple
+    glow: 'rgba(123, 104, 238, 0.25)',
+    background: 'rgba(123, 104, 238, 0.02)'
+  };
+
+  // Handle mouse movement for glow effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      setMousePosition({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+    }
+  };
+
+  return (
+    <div 
+      className="group" 
+      ref={cardRef} 
+      onMouseMove={handleMouseMove}
+    >
+      <Card 
+        className="overflow-hidden relative transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl"
+        style={{
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: `${theme.primary}20`,
+          background: theme.background,
+          transition: 'border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.borderColor = `${theme.primary}80`;
+          (e.currentTarget as HTMLElement).style.boxShadow = `0 0 20px 2px ${theme.glow}`;
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.borderColor = `${theme.primary}20`;
+          (e.currentTarget as HTMLElement).style.boxShadow = '';
+        }}
+      >
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle 12rem at ${mousePosition.x}px ${mousePosition.y}px, ${theme.glow}, transparent 70%)`,
+            zIndex: 0
+          }}
+        ></div>
+        <div className="relative z-10">
+          {children}
+        </div>
+      </Card>
+    </div>
   );
 };
 

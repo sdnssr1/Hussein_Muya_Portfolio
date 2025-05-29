@@ -11,7 +11,9 @@ const hoverStyles = `
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
   .project-container:hover .project-card:not(:hover),
-  .experience-container:hover .experience-card:not(:hover) {
+  .experience-container:hover .experience-card:not(:hover),
+  .education-container:hover .education-card:not(:hover),
+  .awards-container:hover .award-card:not(:hover) {
     filter: blur(2px);
     opacity: 0.7;
     transform: scale(0.98);
@@ -74,13 +76,13 @@ const hoverStyles = `
 `;
 
 const Home = () => {
-  // Dark mode state
+  // Dark mode state - default to true for dark mode
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("darkMode");
-      return saved ? JSON.parse(saved) : false;
+      return saved ? JSON.parse(saved) : true;
     }
-    return false;
+    return true;
   });
 
   // Apply dark mode to document
@@ -316,17 +318,55 @@ const Home = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-square rounded-full overflow-hidden border-4 border-primary/20 shadow-xl max-w-sm mx-auto mt-8">
-              <img
-                src="/images/husse.png"
-                alt="Hussein Muya"
-                className="w-full h-full object-cover"
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: '35% center',
-                  transform: 'scale(1.25)'
+            <div 
+              className="profile-container relative group max-w-sm mx-auto mt-8"
+              style={{ width: '100%', aspectRatio: '1/1' }}
+            >
+              {/* Always visible background glow - more subtle version */}
+              <div 
+                className="absolute inset-0 rounded-full z-0 animate-pulse"
+                style={{ 
+                  background: 'radial-gradient(circle, rgba(79, 70, 229, 0.3) 0%, rgba(79, 70, 229, 0.1) 50%, rgba(79, 70, 229, 0) 70%)',
+                  transform: 'scale(1.25)',
+                  filter: 'blur(25px)',
+                  animation: 'pulse 4s infinite alternate'
                 }}
-              />
+              ></div>
+              
+              {/* Subtle accent glow */}
+              <div 
+                className="absolute inset-0 rounded-full z-0 animate-pulse"
+                style={{ 
+                  background: 'radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(236, 72, 153, 0) 60%)',
+                  transform: 'scale(1.2)',
+                  filter: 'blur(35px)',
+                  animation: 'pulse 5s infinite alternate-reverse'
+                }}
+              ></div>
+              
+              {/* Enhanced glow on hover */}
+              <div 
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
+                style={{ 
+                  background: 'radial-gradient(circle, rgba(79, 70, 229, 0.4) 0%, rgba(79, 70, 229, 0.15) 50%, rgba(79, 70, 229, 0) 75%)',
+                  transform: 'scale(1.3)',
+                  filter: 'blur(20px)'
+                }}
+              ></div>
+              
+              {/* The actual image container */}
+              <div className="aspect-square rounded-full overflow-hidden border-4 border-primary/20 shadow-xl relative z-10 transition-transform duration-500 group-hover:transform group-hover:scale-105">
+                <img
+                  src="/images/husse.png"
+                  alt="Hussein Muya"
+                  className="w-full h-full object-cover"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: '35% center',
+                    transform: 'scale(1.25)'
+                  }}
+                />
+              </div>
             </div>
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
           </motion.div>
@@ -498,20 +538,56 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 education-container">
           {education.map((edu, index) => (
-            <div
-              key={index}
-              className="bg-card rounded-xl border p-6 shadow-sm transition-all hover:shadow-md"
+            <div 
+              key={index} 
+              className="education-card group relative rounded-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+              style={{
+                '--x': '50%',
+                '--y': '50%',
+                '--gold-primary': '#d4af37',
+                '--gold-secondary': '#f0c75e',
+                '--gold-glow': 'rgba(212, 175, 55, 0.25)',
+                '--gold-bg': 'rgba(212, 175, 55, 0.02)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: 'rgba(212, 175, 55, 0.1)',
+                transition: 'border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease'
+              } as React.CSSProperties}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                e.currentTarget.style.setProperty('--x', `${x}px`);
+                e.currentTarget.style.setProperty('--y', `${y}px`);
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                e.currentTarget.style.boxShadow = '0 0 20px 2px rgba(212, 175, 55, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.1)';
+                e.currentTarget.style.boxShadow = '';
+              }}
             >
-              <h3 className="text-xl font-semibold">{edu.degree}</h3>
-              <div className="flex items-center justify-between mt-2">
-                <p className="text-muted-foreground">{edu.institution}</p>
-                <span className="text-sm text-muted-foreground">
-                  {edu.year}
-                </span>
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(circle 12rem at var(--x) var(--y), var(--gold-glow), transparent 70%)',
+                  zIndex: 0
+                }}
+              ></div>
+              <div className="bg-card p-6 relative z-10" style={{ background: 'var(--gold-bg)' }}>
+                <h3 className="text-xl font-semibold">{edu.degree}</h3>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-muted-foreground">{edu.institution}</p>
+                  <span className="text-sm text-muted-foreground">
+                    {edu.year}
+                  </span>
+                </div>
+                <p className="mt-4 text-muted-foreground">{edu.description}</p>
               </div>
-              <p className="mt-4 text-muted-foreground">{edu.description}</p>
             </div>
           ))}
         </div>
@@ -533,20 +609,56 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 awards-container">
           {awards.map((award, index) => (
-            <div
-              key={index}
-              className="bg-card rounded-xl border p-6 shadow-sm transition-all hover:shadow-md"
+            <div 
+              key={index} 
+              className="award-card group relative rounded-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+              style={{
+                '--x': '50%',
+                '--y': '50%',
+                '--teal-primary': '#008080',
+                '--teal-secondary': '#20b2aa',
+                '--teal-glow': 'rgba(0, 128, 128, 0.25)',
+                '--teal-bg': 'rgba(0, 128, 128, 0.02)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: 'rgba(0, 128, 128, 0.1)',
+                transition: 'border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease'
+              } as React.CSSProperties}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                e.currentTarget.style.setProperty('--x', `${x}px`);
+                e.currentTarget.style.setProperty('--y', `${y}px`);
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(0, 128, 128, 0.5)';
+                e.currentTarget.style.boxShadow = '0 0 20px 2px rgba(0, 128, 128, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(0, 128, 128, 0.1)';
+                e.currentTarget.style.boxShadow = '';
+              }}
             >
-              <h3 className="text-xl font-semibold">{award.title}</h3>
-              <div className="flex items-center justify-between mt-2">
-                <p className="text-muted-foreground">{award.organization}</p>
-                <span className="text-sm text-muted-foreground">
-                  {award.year}
-                </span>
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(circle 12rem at var(--x) var(--y), var(--teal-glow), transparent 70%)',
+                  zIndex: 0
+                }}
+              ></div>
+              <div className="bg-card p-6 relative z-10" style={{ background: 'var(--teal-bg)' }}>
+                <h3 className="text-xl font-semibold">{award.title}</h3>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-muted-foreground">{award.organization}</p>
+                  <span className="text-sm text-muted-foreground">
+                    {award.year}
+                  </span>
+                </div>
+                <p className="mt-4 text-muted-foreground">{award.description}</p>
               </div>
-              <p className="mt-4 text-muted-foreground">{award.description}</p>
             </div>
           ))}
         </div>

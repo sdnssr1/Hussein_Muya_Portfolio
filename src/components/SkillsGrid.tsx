@@ -24,10 +24,10 @@ const pyYellow = "#ffde57";
 // Define theme colors for different categories
 const categoryThemes = {
   programming: {
-    primary: "#9c27b0",    // Purple theme
-    secondary: "#ce93d8",
-    glow: "rgba(156, 39, 176, 0.5)",
-    background: "rgba(156, 39, 176, 0.05)"
+    primary: "#2196f3",    // Blue theme
+    secondary: "#90caf9",
+    glow: "rgba(33, 150, 243, 0.5)",
+    background: "rgba(33, 150, 243, 0.05)"
   },
   hardware: {
     primary: "#4caf50",    // Green theme
@@ -36,10 +36,10 @@ const categoryThemes = {
     background: "rgba(76, 175, 80, 0.05)"
   },
   methodologies: {
-    primary: "#2196f3",    // Blue theme
-    secondary: "#90caf9",
-    glow: "rgba(33, 150, 243, 0.5)",
-    background: "rgba(33, 150, 243, 0.05)"
+    primary: "#9c27b0",    // Purple theme
+    secondary: "#ce93d8",
+    glow: "rgba(156, 39, 176, 0.5)",
+    background: "rgba(156, 39, 176, 0.05)"
   }
 };
 
@@ -396,8 +396,22 @@ const SkillCard = ({ skill, categoryType }: SkillCardProps) => {
   return (
     <div className="group" ref={cardRef} onMouseMove={handleMouseMove}>
       <Card 
-        className="overflow-hidden relative transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl border-0"
-        style={glowStyle}
+        className="overflow-hidden relative transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl"
+        style={{
+          ...glowStyle,
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: `${theme.primary}20`,
+          transition: 'border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.borderColor = `${theme.primary}80`;
+          (e.currentTarget as HTMLElement).style.boxShadow = `0 0 20px 2px ${theme.glow}`;
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.borderColor = `${theme.primary}20`;
+          (e.currentTarget as HTMLElement).style.boxShadow = '';
+        }}
       >
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
              style={{
